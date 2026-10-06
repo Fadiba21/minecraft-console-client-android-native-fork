@@ -1,114 +1,301 @@
-<div align="center">
+# Minecraft Console Client Android Native
 
-<img src="https://i.pics.rs/LLDhE.png" alt="Logo"/>
+> MCC Droid adalah port Android native berbasis Jetpack Compose untuk menjalankan dan mengelola **Minecraft Console Client (MCC)** dari perangkat Android.
 
-# Minecraft Console Client (MCC)
+[![Build APK](https://github.com/Fadiba21/minecraft-console-client-android-native/actions/workflows/build-apk.yml/badge.svg)](https://github.com/Fadiba21/minecraft-console-client-android-native/actions/workflows/build-apk.yml)
 
-[Documentation](https://mccteam.github.io/) | [Download](#download) | [Installation](https://mccteam.github.io/guide/installation.html) | [Configuration](https://mccteam.github.io/guide/configuration.html) | [Usage](https://mccteam.github.io/guide/usage.html)
+## Tentang proyek
 
-</div>
+Proyek ini adalah **fork dan adaptasi Android native** dari [MCCTeam/Minecraft-Console-Client](https://github.com/MCCTeam/Minecraft-Console-Client). MCC Droid mempertahankan runtime MCC sebagai komponen inti, kemudian menambahkan antarmuka Android, pengelolaan profil, editor konfigurasi, otomasi, Gemini Assistant, console MCC monospace, dan sound effect UI.
 
-<div align="center">
+Proyek ini sedang dikembangkan secara aktif. Source code, workflow build, dokumentasi, catatan progres, dan APK release tersedia di repository ini.
 
-[English](https://github.com/MCCTeam/Minecraft-Console-Client/blob/master/README.md) | [Nederlands](https://github.com/MCCTeam/MCCTeam.github.io/blob/master/MCC-README/README-Dutch.md) | [Русский](https://github.com/MCCTeam/MCCTeam.github.io/blob/master/MCC-README/README-Russian.md) | [Српски](https://github.com/MCCTeam/MCCTeam.github.io/blob/master/MCC-README/README-Serbian_Cyrillic.md) | [Türkçe](https://github.com/MCCTeam/MCCTeam.github.io/blob/master/MCC-README/README-Turkish.md) | [Tiếng Việt](https://github.com/MCCTeam/MCCTeam.github.io/blob/master/MCC-README/README-Vietnamese.md) | [简体中文](https://github.com/MCCTeam/MCCTeam.github.io/blob/master/MCC-README/README-Chinese_Simplified.md) | [繁體中文](https://github.com/MCCTeam/MCCTeam.github.io/blob/master/MCC-README/README-Chinese_Traditional.md)
+## Fitur utama
 
-</div>
+### Pengelolaan MCC
 
-<div align="center">
+- Menjalankan MCC native pada Android ARM64.
+- Banyak profil untuk akun/server yang berbeda.
+- Start, stop, restart, dan status sesi.
+- Login Microsoft melalui device code.
+- Runtime MCC diekstrak otomatis ke penyimpanan aplikasi.
+- Dukungan command MCC dan command Minecraft berbasis `/`.
 
-[![GitHub Actions build status](https://github.com/MCCTeam/Minecraft-Console-Client/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/MCCTeam/Minecraft-Console-Client/releases/latest) <a href="https://discord.gg/sfBv4TtpC9"><img src="https://img.shields.io/discord/1018553894831403028?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
+### Console MCC
 
-</div>
+Halaman Terminal sekarang murni untuk MCC dan menggunakan console monospace penuh. Shell Android dipindahkan ke **Pengaturan → Konsol → Buka Shell Android (advanced)**.
 
-> [!IMPORTANT]
-> ## 📢 Major News
->
-> After 13 years of active development, we are rewriting MCC from the ground up to make development faster and enable powerful new features. The rewrite is currently being led by [@milutinke](https://github.com/milutinke). Along the refactoring, the client is being polished, the UX and UI are being improved, new features are being added and existing ones improved. ✨
->
-> **Update (29.09.2026)** The early access build (No. 10) for the 2.0 client is available for download: [here](https://github.com/MCCTeam/Minecraft-Console-Client/releases/tag/MCC-2.0-early-access-build-10)
->
-> Please leave feedback on Discord.
->
-> After the release of the Minecraft Console Client 2.0, the old client will remain available to use but will no longer be updated. The new client is expected for public testing in the coming weeks. 🚀
->
-> Follow progress in [#🚀refactor-updates](https://discord.com/channels/1018553894831403028/1543210248439992461) on our [Discord server](https://discord.gg/sfBv4TtpC9)!
+Console MCC memiliki fungsi:
 
-## **About ℹ️**
+- Kirim command.
+- Command history.
+- Shortcut command adaptif maksimal lima command teratas.
+- Saran command dan katalog perintah.
+- Auto-follow output.
+- Tombol `−` dan `+` kecil di kanan atas untuk mengatur ukuran teks dan menampilkan lebih banyak baris.
+- Copy baris atau seluruh log.
+- Simpan log ke folder profil.
+- Buka URL yang muncul di chat.
+- Bersihkan output.
 
-**Minecraft Console Client (MCC)** is a lightweight cross-platform open-source Minecraft TUI client for **Java** edition that allows you to connect to any Minecraft Java server, send commands and receive text messages in a fast and easy way without having to open the main Minecraft game.
+### Editor konfigurasi
 
-## Download
+- Editor visual untuk field konfigurasi MCC.
+- Input teks, password, dropdown, switch, slider, dan daftar string.
+- Mode raw editor untuk pengguna tingkat lanjut.
+- Perubahan konfigurasi terlihat langsung di UI.
+- Simpan, buang perubahan, dan reload konfigurasi.
 
-Get the latest release from the [Releases section](https://github.com/MCCTeam/Minecraft-Console-Client/releases/latest).
+### Otomasi dan notifikasi
 
-## Quick Install ⚡
+- Trigger berdasarkan teks atau event log MCC.
+- Auto-command, auto-chat, notifikasi, delay, stop, dan restart.
+- Regex untuk pola event.
+- Notifikasi login, kick, disconnect, whisper, dan event lain.
+- Script C# MCC di folder data bersama.
 
-Open a terminal in the folder where you want MCC and run:
+### Gemini Assistant
 
-Linux / macOS:
+Gemini Assistant dapat dibuka dari Dashboard melalui tombol AI kecil di kanan bawah atau dari menu Lainnya.
+
+Kemampuan AI di dalam sandbox aplikasi:
+
+- Membaca daftar profil.
+- Membaca config MCC.
+- Membaca log dan file teks profil.
+- Membaca status aplikasi, otomasi, notifikasi, dan setting.
+- Membaca metadata runtime MCC.
+- Membuat atau mengubah config.
+- Membuat dan mengedit file teks.
+- Membuat script C# MCC.
+- Membuat otomasi.
+- Mengubah setting aplikasi yang diizinkan.
+- Mengirim command MCC setelah konfirmasi pengguna.
+
+Perubahan yang bersifat menulis atau mengirim command membutuhkan konfirmasi. AI tidak memiliki akses root, tidak menjalankan shell bebas, tidak dapat menulis binary runtime, dan tidak dapat mengakses path di luar sandbox data MCC Droid.
+
+### Sound effect UI
+
+Aplikasi memakai 17 sound effect UI dari [UI SFX](https://github.com/romainsimon/uisfx), menggunakan **cinematic pack** dengan lisensi audio **CC0 1.0**. Cue dipetakan berdasarkan makna aksi, seperti select, open, close, copy, send, success, error, warning, processing, toggle, dan delete.
+
+Sound effect dibuat singkat, lembut, dan tidak mengambil audio proprietary dari Windows atau Apple.
+
+## Cara menggunakan aplikasi
+
+### 1. Buat profil
+
+1. Buka tab **Beranda**.
+2. Tekan **Profil baru**.
+3. Masukkan nama profil.
+4. Buka tab **Konfig**.
+5. Isi login, password, host, port, dan setting lain.
+6. Simpan perubahan.
+
+Satu profil memiliki folder data dan konfigurasi sendiri.
+
+### 2. Jalankan MCC
+
+1. Kembali ke **Beranda**.
+2. Tekan tombol ▶ pada profil.
+3. Jika login Microsoft diperlukan, ikuti device code yang ditampilkan.
+4. Buka tab **Terminal**.
+5. Gunakan console MCC untuk memantau output dan mengirim command.
+
+### 3. Mengirim command
+
+Contoh:
+
+```text
+/help
+/health
+/list
+/reload
+```
+
+Command yang diawali `/` akan dicatat sebagai statistik shortcut. Lima command yang paling sering digunakan akan tampil sebagai shortcut otomatis.
+
+### 4. Mengonfigurasi Gemini API
+
+1. Buka **Lainnya → Pengaturan**.
+2. Cari bagian **Gemini / Google AI Studio**.
+3. Masukkan API key dari Google AI Studio.
+4. Simpan API key.
+5. Tekan tombol untuk mengambil daftar model.
+6. Pilih model Gemini yang tersedia.
+7. Buka tombol AI dari Dashboard.
+
+API key disimpan terenkripsi menggunakan Android Keystore. API key tidak ditulis ke source code atau repository.
+
+Contoh pengujian aman:
+
+```text
+Baca config profil saya dan jelaskan setting server yang aktif.
+```
+
+Kemudian uji pembuatan script:
+
+```text
+Buat script C# MCC yang mengirim pesan otomatis ketika pemain mengetik "hello".
+Jelaskan file yang akan dibuat dan tunggu konfirmasi sebelum menyimpannya.
+```
+
+AI akan menampilkan preview tindakan. Tekan **Terapkan** hanya setelah isi dan target file sudah diperiksa.
+
+### 5. Menggunakan otomasi
+
+1. Buka **Otomasi**.
+2. Buat aturan baru.
+3. Isi pola teks atau event.
+4. Tentukan command atau aksi.
+5. Simpan dan aktifkan aturan.
+
+Contoh konsep:
+
+```text
+Jika log berisi "joined the game", kirim /say Selamat datang
+```
+
+## Arsitektur sistem
+
+```text
+Android Activity / Jetpack Compose UI
+        │
+        ├── Dashboard, Config, Terminal, Automation, Files, Gemini
+        │
+        ├── SessionManager
+        │       └── McSession → MCC BasicIO process
+        │
+        ├── LogBuffer → McText → Console renderer
+        │
+        ├── ProfileStore / RuleStore / NotifyStore / AppPrefs
+        │
+        ├── GeminiClient → Google Gemini REST API
+        │       └── MccAiTools → sandbox data MCC
+        │
+        └── RuntimeInstaller → assets/mcc-bundle.zip
+```
+
+### Jalur proses MCC
+
+1. `RuntimeInstaller` mengekstrak runtime MCC dari `assets/mcc-bundle.zip`.
+2. `SessionManager` membuat sesi per profil.
+3. `McSession` menjalankan MCC dengan mode `BasicIO`.
+4. Output stdout dibaca sebagai UTF-8.
+5. `McText` menormalisasi Unicode, warna Minecraft, ANSI, mojibake, dan format warna hex.
+6. `LogBuffer` mengirim batch output ke UI.
+7. Output dirender sebagai console monospace dengan warna dan style server.
+
+### Jalur Gemini
+
+1. Gemini API key disimpan terenkripsi di Android Keystore.
+2. `GeminiClient` mengirim prompt dan deklarasi function tools ke Gemini.
+3. `MccAiTools` memvalidasi dan menjalankan tool yang diminta.
+4. Operasi baca dijalankan langsung dalam sandbox.
+5. Operasi tulis dan command ditampilkan sebagai preview untuk konfirmasi pengguna.
+
+## Struktur repository
+
+```text
+app/                         Source aplikasi Android
+app/src/main/java/           UI, core, parser, session, AI, automation
+app/src/main/res/            Resource UI, icon, sound effect
+scripts/                     Script runtime MCC dan build bundle
+.github/workflows/            Workflow build APK
+CHANGELOG.md                 Ringkasan perubahan
+DEVELOPMENT_PROGRESS.md      Riwayat development dan validasi
+NOTICE.md                    Attribution dan sumber upstream/assets
+```
+
+## Build dari source
+
+### Prasyarat
+
+- JDK 21
+- Android SDK dengan platform/build-tools yang sesuai
+- Gradle 8.11.1 atau Gradle Wrapper
+- Linux environment untuk membuat runtime MCC ARM64
+- .NET SDK jika ingin membangun ulang runtime MCC
+
+### Build debug/release
 
 ```bash
-curl -fsSL https://mccteam.github.io/install.sh | sh
+export ANDROID_SDK_ROOT=/path/to/android-sdk
+export ANDROID_HOME="$ANDROID_SDK_ROOT"
+./gradlew assembleRelease
 ```
 
-Windows (PowerShell):
+APK hasil build Gradle berada di:
 
-```powershell
-iwr -useb https://mccteam.github.io/install.ps1 | iex
+```text
+app/build/outputs/apk/release/app-release.apk
 ```
 
-The script detects your architecture and downloads the right binary. For more options (including `wget` and manual downloads), see the [installation guide](https://mccteam.github.io/guide/installation.html).
+### GitHub Actions
 
-## How to use 📚
+Workflow tersedia di `.github/workflows/build-apk.yml`.
 
--   🌐 [Full Documentation](https://mccteam.github.io/)
--   📦 [Installation](https://mccteam.github.io/guide/installation.html)
--   📖 [Usage](https://mccteam.github.io/guide/usage.html)
--   ⚙️ [Configuration](https://mccteam.github.io/guide/configuration.html)
--   🤖 [Chat Bots](https://mccteam.github.io/guide/chat-bots.html)
--   📝 [Sample configuration files](MinecraftClient/config/)
+1. Buka tab **Actions**.
+2. Pilih workflow **Build APK**.
+3. Tekan **Run workflow**.
+4. Isi `mcc_ref` jika ingin memakai branch, tag, atau commit MCC tertentu.
+5. Unduh artifact atau APK dari GitHub Release.
 
-## Getting Help 🙋
+Untuk signing tetap, gunakan GitHub Actions Secrets:
 
-Check out the [Website](https://mccteam.github.io/), [README](https://github.com/MCCTeam/Minecraft-Console-Client/tree/master/MinecraftClient/config#minecraft-console-client-user-manual) and existing [Discussions](https://github.com/MCCTeam/Minecraft-Console-Client/discussions): Maybe your question is answered there. If not, please open a [New Discussion](https://github.com/MCCTeam/Minecraft-Console-Client/discussions/new) and ask your question. If you find a bug, please report it in the [Issues](https://github.com/MCCTeam/Minecraft-Console-Client/issues) section.
+- `KEYSTORE_BASE64`
+- `KEYSTORE_PASSWORD`
+- `KEY_ALIAS`
+- `KEY_PASSWORD`
 
-## Discord
+## Download APK
 
-We now have a Discord server, click [here](https://discord.gg/sfBv4TtpC9) to join.
+APK release tersedia di halaman [Releases](../../releases). APK yang dibangun dan divalidasi pada milestone ini adalah **MCCDroid 1.0.4**.
 
-## Helping Us ❤️
+## Status development
 
-We are a small community so we need help to implement upgrades for new Minecraft versions, fixing bugs and expanding the project. We are always looking for motivated people to contribute. If you feel like it could be you, please have a look at the [issues](https://github.com/MCCTeam/Minecraft-Console-Client/issues?q=is%3Aissue+is%3Aopen+label%3Awaiting-for%3Acontributor) section :)
+Fitur yang sudah tersedia:
 
-## How to contribute 📝
+- Runtime MCC ARM64 di Android.
+- Profil multi-server.
+- Config editor.
+- Terminal Console MCC murni dengan kontrol ukuran teks.
+- Parsing warna dan perbaikan karakter rusak.
+- Shortcut command adaptif.
+- Dashboard dengan animasi.
+- Gemini Assistant dan tool sandbox.
+- Automation dan notification.
+- File manager dan script support.
+- Soft UI sound pack CC0.
+- Release APK 1.0.4 tervalidasi.
 
-If you'd like to contribute to Minecraft Console Client, great, just fork the repository and submit a pull request on the _Master_ branch. To contribute to the website / online documentation see also the [Website repository](https://github.com/MCCTeam/MCCTeam.github.io).
+Lihat [DEVELOPMENT_PROGRESS.md](DEVELOPMENT_PROGRESS.md) untuk catatan perubahan lebih rinci.
 
-![Alt](https://repobeats.axiom.co/api/embed/c8a6c7c47fde8fcbe3727a21eab46e6b39dff60d.svg "Repobeats analytics image")
+## Batasan dan catatan
 
-## Translating Minecraft Console Client 🌍
+- MCC Droid bukan Minecraft penuh dan tidak merender dunia Minecraft.
+- Mod Fabric/Forge tidak berjalan di dalam MCC; integrasi mod launcher terpisah.
+- Terminal MCC memakai BasicIO/pipa, bukan PTY/TUI penuh.
+- Runtime yang disertakan adalah target Android ARM64.
+- Target SDK saat ini dipertahankan untuk kompatibilitas eksekusi runtime lokal dan bukan target Google Play.
+- Gunakan API key Gemini pribadi dan jangan memasukkannya ke issue, commit, atau log.
 
-To improve translations for MCC, please visit: [Crowdin - Minecraft Console Client](https://crowdin.com/project/minecraft-console-client).
+## Sumber dan attribution
 
-## Building from the source 🏗️
+- Upstream utama: [MCCTeam/Minecraft-Console-Client](https://github.com/MCCTeam/Minecraft-Console-Client)
+- Android UI dan integrasi: MCC Droid Android Native
+- UI audio: [romainsimon/uisfx](https://github.com/romainsimon/uisfx), soft pack, CC0 audio
+- Dokumentasi Gemini: [Google AI for Developers](https://ai.google.dev/)
 
-This section has been moved to our new [Documentation website](https://mccteam.github.io/guide/installation.html#building-from-the-source-code).
+## Kontribusi
 
-## License ⚖️
+Issue dan pull request dipersilakan. Saat melaporkan bug, sertakan:
 
-Unless specifically stated, the code is from the MCC Team or Contributors, and available under CDDL-1.0. Else, the license and original author are mentioned in source file headers.
-The main terms of the CDDL-1.0 license are basically the following:
+- Versi APK.
+- Versi Android dan arsitektur perangkat.
+- Ukuran teks console dan jenis encoding/format server yang digunakan.
+- Langkah reproduksi.
+- Potongan log yang sudah disensor dari API key, password, token, dan data pribadi.
 
--   You may use the licensed code in whole or in part in any program you desire, regardless of the license of the program as a whole (or rather, as excluding the code you are borrowing). The program itself may be open or closed source, free or commercial.
--   However, in all cases, any modifications, improvements, or additions to the CDDL code (any code that is referenced in direct modifications to the CDDL code is considered an addition to the CDDL code, and so is bound by this requirement; e.g. a modification of a math function to use a fast lookup table makes that table itself an addition to the CDDL code, regardless of whether it's in a source code file of its own) must be made publicly and freely available in source, under the CDDL license itself.
--   In any program (source or binary) that uses CDDL code, recognition must be given to the source (either project or author) of the CDDL code. As well, modifications to the CDDL code (which must be distributed as source) may not remove notices indicating the ancestry of the code.
+## Lisensi
 
-More info at http://qstuff.blogspot.fr/2007/04/why-cddl.html
-Full license at http://opensource.org/licenses/CDDL-1.0
-
-## Uses technologies from
-<div align="center">
-<a href="https://sentry.io/welcome/">
-  <img src="https://github.com/breadbyte/Minecraft-Console-Client/assets/14045257/411e9a2f-cd9b-4bb5-b7e9-cd7529c76b88" alt="Sentry"  />
-</a>
-</div>
+MCC Droid adalah fork/adaptasi dan harus dibaca bersama lisensi upstream Minecraft Console Client. Komponen Android tambahan, asset, dan dependency pihak ketiga memiliki lisensi masing-masing. Lihat [NOTICE.md](NOTICE.md) dan dokumentasi upstream sebelum redistribusi.

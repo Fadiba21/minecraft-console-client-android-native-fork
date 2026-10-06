@@ -1,0 +1,6 @@
+Kenney Interface Sounds
+License: Creative Commons CC0 1.0 Universal
+Source: https://kenney.nl/assets/interface-sounds
+Downloaded 2026-10-06.
+Additional packs pulse, airy, carbon, pixel, chime, velvet, spark, orbit, mono, and bloom are
+creative filter variations of the CC0 source sounds, generated locally with FFmpeg.

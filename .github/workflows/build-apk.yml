@@ -1,0 +1,171 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      mcc_ref:
+        description: "Branch / tag / commit Minecraft-Console-Client yang dipakai"
+        required: false
+        default: "master"
+      publish_release:
+        description: "Unggah APK ke halaman Releases"
+        required: false
+        type: boolean
+        default: true
+
+concurrency:
+  group: build-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  MCC_REPO: MCCTeam/Minecraft-Console-Client
+  OPENSSL_VERSION: "3.0.15"
+  DOTNET_VERSION: "10.0.x"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout aplikasi
+        uses: actions/checkout@v4
+
+      - name: Checkout source Minecraft Console Client
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.MCC_REPO }}
+          ref: ${{ github.event.inputs.mcc_ref || 'master' }}
+          path: mcc-src
+          submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Cache OpenSSL Android
+        id: ossl
+        uses: actions/cache@v4
+        with:
+          path: build/openssl-out
+          key: openssl-android-arm64-${{ env.OPENSSL_VERSION }}-v1
+
+      # Tiga langkah runtime di bawah sengaja continue-on-error: bila salah satunya gagal,
+      # APK tetap dibangun (UI + diagnostik) dan statusnya ditandai jelas, sehingga Anda
+      # tetap punya APK untuk dicoba dan log untuk diperbaiki.
+      - name: Build OpenSSL (Android arm64)
+        id: openssl_build
+        continue-on-error: true
+        if: steps.ossl.outputs.cache-hit != 'true'
+        run: bash scripts/build-openssl.sh
+
+      - name: Publish MCC (linux-bionic-arm64, self-contained)
+        id: mcc_publish
+        continue-on-error: true
+        env:
+          MCC_SRC: mcc-src
+        run: bash scripts/publish-mcc.sh
+
+      - name: Susun bundle runtime
+        id: mcc_bundle
+        continue-on-error: true
+        env:
+          MCC_SRC: mcc-src
+          MCC_REF: ${{ github.event.inputs.mcc_ref || 'master' }}
+        run: bash scripts/make-bundle.sh
+
+      - name: Status runtime
+        run: |
+          if [ -f app/src/main/assets/mcc-bundle.zip ]; then
+            echo "RUNTIME_STATUS=runtime MCC disertakan" >> "$GITHUB_ENV"
+            echo "Runtime MCC berhasil dibundel."
+          else
+            echo "RUNTIME_STATUS=TANPA runtime MCC (lihat log langkah publish/bundle)" >> "$GITHUB_ENV"
+            echo "::warning::Runtime MCC GAGAL dibundel. APK tetap dibuat tanpa runtime; periksa log langkah OpenSSL/Publish/Bundle."
+          fi
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10.2"
+
+      - name: Cache keystore
+        uses: actions/cache@v4
+        with:
+          path: signing/release.keystore
+          key: mccdroid-keystore-v1
+
+      - name: Siapkan kunci penandatangan
+        env:
+          KS_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          mkdir -p signing
+          if [ -n "${KS_B64:-}" ]; then
+            echo "$KS_B64" | base64 -d > signing/release.keystore
+            echo "Memakai keystore dari secrets."
+          elif [ -f signing/release.keystore ]; then
+            echo "Memakai keystore dari cache."
+          else
+            keytool -genkeypair -keystore signing/release.keystore \
+              -storepass mccdroid -keypass mccdroid -alias mccdroid \
+              -keyalg RSA -keysize 2048 -validity 36500 -dname "CN=MCC Droid"
+            echo "Membuat keystore baru (disimpan ke cache)."
+          fi
+
+      - name: Build APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -o pipefail
+          mkdir -p build
+          gradle :app:assembleRelease --no-daemon --stacktrace 2>&1 | tee build/gradle.log
+
+      - name: Ganti nama APK
+        run: |
+          APK=$(ls app/build/outputs/apk/release/*.apk | head -n1)
+          cp "$APK" "MCC-Droid-v1.0.${{ github.run_number }}.apk"
+          ls -la MCC-Droid-*.apk
+
+      - name: Unggah APK (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: MCC-Droid-apk
+          path: MCC-Droid-*.apk
+          if-no-files-found: error
+
+      - name: Unggah ke Releases
+        if: ${{ github.event_name == 'push' || github.event.inputs.publish_release == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: MCC Droid v1.0.${{ github.run_number }}
+          body: |
+            APK otomatis dari GitHub Actions.
+            Status: ${{ env.RUNTIME_STATUS }}
+            MCC: ${{ env.MCC_REPO }}@${{ github.event.inputs.mcc_ref || 'master' }}
+          files: MCC-Droid-*.apk
+
+      - name: Unggah log build
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            build/gradle.log
+            build/bundle/bundle-info.json
+          if-no-files-found: ignore
